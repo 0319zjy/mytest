@@ -70,6 +70,38 @@ spots_data = pd.DataFrame({
 # Streamlit原生地图（无需plotly）
 st.map(spots_data, latitude="纬度", longitude="经度", size=200, color="#1E90FF")
 
+# --- 新增：音频介绍 ---
+st.subheader("🎧 景点语音介绍")
+audio_data = {
+    "青秀山": "https://samplelib.com/lib/preview/mp3/sample-6s.mp3",  # 示例音频
+    "三街两巷": "https://samplelib.com/lib/preview/mp3/sample-9s.mp3",
+    "南湖公园": "https://samplelib.com/lib/preview/mp3/sample-15s.mp3"
+}
+
+selected_audio = st.selectbox("选择景点听取介绍", list(audio_data.keys()))
+st.audio(audio_data[selected_audio], format="audio/mp3")
+
+
+# --- 新增：视频展示 ---
+st.subheader("🎬 景点视频欣赏")
+video_data = [
+    {
+        "title": "青秀山风光全景",
+        "url": "https://samplelib.com/lib/preview/mp4/sample-5s.mp4"  # 示例视频
+    },
+    {
+        "title": "三街两巷夜景",
+        "url": "https://samplelib.com/lib/preview/mp4/sample-10s.mp4"
+    }
+]
+
+# 视频选择器
+selected_video = st.radio("选择视频观看", [v["title"] for v in video_data])
+# 获取选中的视频URL
+video_url = next(v["url"] for v in video_data if v["title"] == selected_video)
+st.video(video_url, format="video/mp4")
+
+
 # --- 2. 景点评分（原生柱状图）---
 st.subheader("⭐ 景点评分")
 score_data = pd.DataFrame({
