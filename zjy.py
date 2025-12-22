@@ -46,22 +46,6 @@ fig_cost = px.line(cost_data, x="类型", y="人均消费(元)", marker="o", lin
 st.plotly_chart(fig_cost, use_container_width=True)
 
 
-# --- 4. 游玩高峰时段 ---
-st.subheader("⏰ 游玩高峰时段")
-time_data = pd.DataFrame({
-    "时段": ["09:00", "11:00", "13:00", "15:00", "17:00", "19:00"],
-    "游客量(百人)": [30, 50, 20, 45, 60, 35],
-    "拥挤指数": [0.6, 0.9, 0.3, 0.8, 1.0, 0.7]
-})
-fig_time = go.Figure()
-fig_time.add_trace(go.Bar(x=time_data["时段"], y=time_data["游客量(百人)"], name="游客量", marker_color="royalblue"))
-fig_time.add_trace(go.Line(x=time_data["时段"], y=time_data["拥挤指数"], name="拥挤指数", yaxis="y2", line_color="coral"))
-fig_time.update_layout(
-    yaxis2=dict(title="拥挤指数", overlaying="y", side="right"),
-    legend=dict(x=0, y=1.1, orientation="h")
-)
-st.plotly_chart(fig_time, use_container_width=True)
-
 
 # --- 5. 景点详情 ---
 st.subheader("📍 景点详情")
@@ -75,3 +59,4 @@ with st.expander("查看景点详情", expanded=True):
 # --- 6. 今日游玩推荐 ---
 st.subheader("✨ 今日游玩推荐")
 st.success("推荐：青秀山（上午游客较少，可避开午后高峰）")
+
