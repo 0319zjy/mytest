@@ -6,6 +6,58 @@ st.set_page_config(page_title="南宁旅游探索", page_icon="🌿", layout="wi
 st.title("🌿 南宁旅游探索")
 st.caption("探索南宁热门景点、游客评分、消费数据及游玩时段建议")
 
+# 网站地址（替换为你的姓名全拼）
+st.markdown("网站地址：https://zhujiangyuan.streamlit.app")
+
+
+# --- 核心：图片切换（上一张/下一张按钮 + 图注）---
+st.subheader("🖼️ 景点风光展示")
+
+# 初始化session_state存储当前图片索引
+if "img_idx" not in st.session_state:
+    st.session_state.img_idx = 0
+
+# 图片+图注数据（替换为真实图片URL）
+image_data = [
+    {
+        "url": "https://picsum.photos/id/1036/800/500",
+        "caption": "青秀山 - 南宁城市绿肺，四季花开不断"
+    },
+    {
+        "url": "https://picsum.photos/id/1039/800/500",
+        "caption": "三街两巷 - 百年历史街区，感受老南宁风情"
+    },
+    {
+        "url": "https://picsum.photos/id/1043/800/500",
+        "caption": "南湖公园 - 城市中心的生态绿洲，适合休闲漫步"
+    }
+]
+
+# 切换按钮逻辑
+def prev_img():
+    st.session_state.img_idx = (st.session_state.img_idx - 1) % len(image_data)
+
+def next_img():
+    st.session_state.img_idx = (st.session_state.img_idx + 1) % len(image_data)
+
+# 布局：图片容器 + 按钮 + 图注
+img_container = st.container()
+with img_container:
+    # 显示当前图片
+    st.image(
+        image_data[st.session_state.img_idx]["url"],
+        use_column_width="always"  # 占满列宽，和示例一致
+    )
+    # 图注（底部显示）
+    st.caption(image_data[st.session_state.img_idx]["caption"])
+
+# 按钮行（左右排列）
+col1, col2 = st.columns([1, 1])
+with col1:
+    st.button("上一张", on_click=prev_img, use_container_width=True)
+with col2:
+    st.button("下一张", on_click=next_img, use_container_width=True)
+
 # --- 1. 南宁旅游地图（改用Streamlit原生地图）---
 st.subheader("南宁旅游地图")
 # 模拟景点坐标数据（可替换为真实经纬度）
