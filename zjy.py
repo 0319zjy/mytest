@@ -71,11 +71,13 @@ spots_data = pd.DataFrame({
 st.map(spots_data, latitude="纬度", longitude="经度", size=200, color="#1E90FF")
 
 # --- 新增：音频介绍 ---
-st.subheader("🎧 景点推荐音乐")
+st.subheader("🎧 景点语音介绍")
 audio_data = {
-    audio_file = 'https://music.163.com/song/media/outer/url?id=5257138.mp3'
-st.audio(audio_file)
+    "青秀山": "https://music.163.com/song/media/outer/url?id=5257138.mp3",
+    "三街两巷": "https://samplelib.com/lib/preview/mp3/sample-9s.mp3",
+    "南湖公园": "https://samplelib.com/lib/preview/mp3/sample-15s.mp3"
 }
+st.audio(audio_file)
 
 # --- 新增：视频展示 ---
 st.subheader("🎬 景点视频欣赏")
@@ -140,5 +142,6 @@ with st.expander("查看景点详情", expanded=True):
 # --- 6. 今日游玩推荐 ---
 st.subheader("✨ 今日游玩推荐")
 st.success("推荐：青秀山（上午游客较少，可避开午后高峰）")
+
 
 
