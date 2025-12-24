@@ -72,23 +72,65 @@ st.map(spots_data, latitude="纬度", longitude="经度", size=200, color="#1E90
 
 # --- 音频介绍 ---
 st.subheader("🎧 闲逛景点推荐音乐")
-audio_file=[
-    {"url":'https://music.163.com/song/media/outer/url?id=167709.mp3',
-    "text":'河山大好'},
-    {"url":'https://music.163.com/song/media/outer/url?id=756112.mp3',
-    "text":'桜道'},
-]
-for item in audio_file:
-    st.write(f"<span class="emoji emoji1f3bc"></span> {item['text']}") 
-    st.audio(item["url"], format="audio/mp3", autoplay=False)
-
-
-
-
-#udio_file =file ='https://music.163.com/song/media/outer/url?id=214892060
-#st.audio(audio_file)
-
-
+# 页面基础配置
+ st.set_page_config(page_title="简易音乐播放器", page_icon="🎵", layout="centered")
+ st.title("🎵 简易音乐播放器")
+ st.caption("使用Streamlit制作的简单音乐播放器，支持切歌和基本播放控制")
+ # 模拟歌曲数据（可替换为真实音频/封面链接）
+ songs = [
+     {
+         "title": "Bohemian Rhapsody",
+         "artist": "Queen",
+         "duration": "5:55",
+         "cover": " https://img1.doubanio.com/view/photo/s_ratio_poster/public/p2548752370.jpg ",
+         "audio": " https://music.163.com/song/media/outer/url?id=167709.mp3"
+     },
+     {
+         "title": "Yesterday",
+         "artist": "The Beatles",
+         "duration": "2:05",
+         "cover": " https://img2.doubanio.com/view/photo/s_ratio_poster/public/p2628654266.jpg ",
+         "audio": " https://music.163.com/song/media/outer/url?id=210869.mp3 "
+     },
+     {
+         "title": "Hotel California",
+         "artist": "Eagles",
+         "duration": "6:30",
+         "cover": " https://img1.doubanio.com/view/photo/s_ratio_poster/public/p2596084686.jpg ",
+         "audio": " https://music.163.com/song/media/outer/url?id=224703.mp3 "
+     }
+ ]
+ # 初始化会话状态（保存当前歌曲索引）
+ if "current_song_idx" not in st.session_state:
+     st.session_state.current_song_idx = 0
+ # 切歌函数
+ def prev_song():
+     if st.session_state.current_song_idx > 0:
+         st.session_state.current_song_idx -= 1
+ def next_song():
+     if st.session_state.current_song_idx < len(songs) - 1:
+         st.session_state.current_song_idx += 1
+ # 获取当前歌曲信息
+ current_song = songs[st.session_state.current_song_idx]
+ # 布局：封面+歌曲信息+切歌按钮
+ col1, col2 = st.columns([1, 3])
+ with col1:
+     st.image(current_song["cover"], width=200)
+ with col2:
+     st.subheader(current_song["title"])
+     st.write(f"歌手: {current_song['artist']}")
+     st.write(f"时长: {current_song['duration']}")
+     # 切歌按钮
+     btn_col1, btn_col2 = st.columns([1, 1])
+     with btn_col1:
+         st.button("◀️ 上一首", on_click=prev_song, use_container_width=True)
+     with btn_col2:
+         st.button("下一首 ▶️", on_click=next_song, use_container_width=True)
+ # 音频播放控件
+ st.audio(current_song["audio"], format="audio/mp3", autoplay=False)
+ # 进度条模拟（可选）
+ st.progress(0)
+ st.caption("0:00 / 6:12")
 # --- 新增：视频展示 ---
 st.subheader("🎬 景点视频欣赏")
 video_data = [
@@ -152,6 +194,7 @@ with st.expander("查看景点详情", expanded=True):
 # --- 6. 今日游玩推荐 ---
 st.subheader("✨ 今日游玩推荐")
 st.success("推荐：青秀山（上午游客较少，可避开午后高峰）")
+
 
 
 
