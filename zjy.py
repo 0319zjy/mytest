@@ -78,8 +78,8 @@ audio_data = {
     "南湖公园": "https://samplelib.com/lib/preview/mp3/sample-15s.mp3"
 }
 
-selected_audio = st.selectbox("选择景点听取介绍", list(audio_data.keys()))
-st.audio(audio_data[selected_audio], format="audio/mp3")
+audio_file = 'https://music.163.com/song/media/outer/url?id=5257138.mp3'
+st.audio(audio_file)
 
 
 # --- 新增：视频展示 ---
@@ -145,3 +145,4 @@ with st.expander("查看景点详情", expanded=True):
 # --- 6. 今日游玩推荐 ---
 st.subheader("✨ 今日游玩推荐")
 st.success("推荐：青秀山（上午游客较少，可避开午后高峰）")
+
