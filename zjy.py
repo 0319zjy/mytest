@@ -72,7 +72,7 @@ st.map(spots_data, latitude="纬度", longitude="经度", size=200, color="#1E90
 
 # --- 新增：音频介绍 ---
 st.subheader("🎧 闲逛景点推荐音乐")
-audio_file = 'https://https://music.163.com/#/song?id=756112.mp3'
+audio_file = 'music.163.com/outchain/player?type=2&id=2148920607&auto=1&height=66'
 st.audio(audio_file)
 
 
@@ -139,6 +139,7 @@ with st.expander("查看景点详情", expanded=True):
 # --- 6. 今日游玩推荐 ---
 st.subheader("✨ 今日游玩推荐")
 st.success("推荐：青秀山（上午游客较少，可避开午后高峰）")
+
 
 
 
