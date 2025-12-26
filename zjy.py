@@ -95,18 +95,18 @@ spots_data = pd.DataFrame({
     "类型": ["自然景区", "文化园区", "自然景区", "历史街区", "城市公园"],
     "评分": [4.8, 4.5, 4.7, 4.6, 4.4]
 })
-# 绘制地图
+
+# 绘制地图（关键修改：size改为固定数值，解决JSON序列化错误）
 st.map(
     spots_data,
     latitude="纬度",
     longitude="经度",
-    size=spots_data["评分"] * 50,  # 根据评分调整大小
+    size=200,  # 修正：改为固定数值，不再使用动态数组
     color="#1E90FF"
 )
 
 # ========== 3. 简易音乐播放器（核心修复部分） ==========
 st.subheader("🎧 闲逛景点推荐音乐")
-st.markdown("### 🎵 简易音乐播放器")
 st.caption("使用Streamlit制作的简单音乐播放器，支持切歌和基本播放控制")
 
 # 初始化播放器相关状态
@@ -117,35 +117,34 @@ if "audio_playing" not in st.session_state:
 if "audio_progress" not in st.session_state:
     st.session_state.audio_progress = 0
 
-# 歌曲数据（修复链接格式、补充更多信息）
+# 歌曲数据（修正时长秒数、匹配真实音频链接）
 songs = [
     {
-        "title": "Bohemian Rhapsody",
-        "artist": "Queen",
-        "duration": "5:55",
-        "duration_sec": 355,
-        "cover": "https://img1.doubanio.com/view/photo/s_ratio_poster/public/p2548752370.jpg",
-        "audio": "https://music.163.com/song/media/outer/url?id=167709.mp3"
+        "title": "日落黄昏（吉他曲）",
+        "artist": "茹俊龙",
+        "duration": "03:07",
+        "duration_sec": 187, 
+        "cover": "http://p1.music.126.net/5OI7-KYwQ6-OPazlc4cAIg==/109951169473831411.jpg?param=130y130",
+        "audio": "https://music.163.com/song/media/outer/url?id=2148920607.mp3"  
     },
     {
-        "title": "Yesterday",
-        "artist": "The Beatles",
-        "duration": "2:05",
-        "duration_sec": 125,
-        "cover": "https://img2.doubanio.com/view/photo/s_ratio_poster/public/p2628654266.jpg",
-        "audio": "https://music.163.com/song/media/outer/url?id=210869.mp3"
+        "title": "桜道",
+        "artist": "Jusqu'à Grand-Père",
+        "duration": "4:00",
+        "duration_sec": 240, 
+        "cover": "http://p2.music.126.net/4mL5D9TVXq6xRpeRFB--hQ==/862017116176645.jpg?param=130y130",
+        "audio": "https://music.163.com/song/media/outer/url?id=756112.mp3"
     },
     {
-        "title": "Hotel California",
-        "artist": "Eagles",
-        "duration": "6:30",
-        "duration_sec": 390,
-        "cover": "https://img1.doubanio.com/view/photo/s_ratio_poster/public/p2596084686.jpg",
-        "audio": "https://music.163.com/song/media/outer/url?id=224703.mp3"
+        "title": "山行",
+        "artist": "耸耸肩膀",
+        "duration": "2:23",
+        "duration_sec": 143, 
+        "cover": "http://p1.music.126.net/k0b1eHO-XHidclBs4KaLZQ==/109951164550319919.jpg?param=130y130",
+        "audio": "https://music.163.com/song/media/outer/url?id=1409713910.mp3"
     }
 ]
 
-# 切歌函数（循环切歌，修复边界问题）
 def prev_song():
     st.session_state.current_song_idx = (st.session_state.current_song_idx - 1) % len(songs)
     st.session_state.audio_progress = 0  # 切歌重置进度
@@ -161,71 +160,51 @@ def toggle_play():
 # 获取当前歌曲信息
 current_song = songs[st.session_state.current_song_idx]
 
-# 播放器布局（封面+歌曲信息+控制按钮）
-player_col1, player_col2 = st.columns([1, 4])
-with player_col1:
-    # 专辑封面（固定宽度，更美观）
-    st.image(current_song["cover"], width=200, caption="专辑封面", use_column_width="auto")
+# 播放器布局（更接近图片中的布局）
+col_left, col_right = st.columns([1, 2])
 
-with player_col2:
+with col_left:
+    # 专辑封面（固定大小，居中显示）
+    st.markdown('<div style="text-align: center;">', unsafe_allow_html=True)
+    st.image(
+        current_song["cover"], 
+        width=150, 
+        use_column_width=False
+    )
+    st.markdown('<p style="text-align: center;">专辑封面</p>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+with col_right:
     # 歌曲信息
     st.markdown(f"### {current_song['title']}")
     st.write(f"**歌手**: {current_song['artist']}")
     st.write(f"**时长**: {current_song['duration']}")
     
-    # 播放控制和切歌按钮
-    btn_col1, btn_col2, btn_col3 = st.columns([1, 1, 1])
+    # 控制按钮（水平排列）
+    btn_col1, btn_col2, btn_col3 = st.columns(3)
     with btn_col1:
-        st.button("⏮️ 上一首", on_click=prev_song, use_container_width=True)
+        st.button("上一首", on_click=prev_song, use_container_width=True)
     with btn_col2:
-        play_btn_text = "⏸️ 暂停" if st.session_state.audio_playing else "▶️ 播放"
+        play_btn_text = "暂停" if st.session_state.audio_playing else "播放"
         st.button(play_btn_text, on_click=toggle_play, use_container_width=True)
     with btn_col3:
-        st.button("⏭️ 下一首", on_click=next_song, use_container_width=True)
+        st.button("下一首", on_click=next_song, use_container_width=True)
 
-# 音频播放控件（修复格式问题，增加错误处理）
+# 音频组件（修复关键错误：移除use_container_width参数）
 try:
+    # 修复点：移除有问题的use_container_width参数，简化音频组件调用
     st.audio(
         current_song["audio"],
         format="audio/mp3",
-        autoplay=st.session_state.audio_playing,
-        use_container_width=True
+        autoplay=st.session_state.audio_playing
     )
 except Exception as e:
     st.warning(f"音频加载失败: {str(e)}")
     st.info("请检查音频链接是否有效，或稍后再试")
 
-# 动态进度条（模拟播放进度）
-progress_col1, progress_col2 = st.columns([10, 2])
-with progress_col1:
-    progress = st.session_state.audio_progress / current_song["duration_sec"] if current_song["duration_sec"] > 0 else 0
-    st.progress(min(progress, 1.0))
-with progress_col2:
-    # 格式化当前播放时间
-    current_time = str(timedelta(seconds=int(st.session_state.audio_progress)))
-    if current_time.startswith("0:"):
-        current_time = current_time[2:]
-    st.caption(f"{current_time} / {current_song['duration']}")
 
-# ========== 4. 景点视频欣赏 ==========
-st.subheader("🎬 景点视频欣赏")
-video_data = [
-    {
-        "title": "青秀山风光全景",
-        "url": "https://samplelib.com/lib/preview/mp4/sample-5s.mp4"
-    },
-    {
-        "title": "三街两巷夜景",
-        "url": "https://samplelib.com/lib/preview/mp4/sample-10s.mp4"
-    }
-]
 
-# 视频选择器（改为下拉框更美观）
-selected_video = st.selectbox("选择视频观看", [v["title"] for v in video_data])
-video_url = next(v["url"] for v in video_data if v["title"] == selected_video)
-st.video(video_url, format="video/mp4", use_container_width=True)
-
-# ========== 5. 景点评分（柱状图） ==========
+# ========== 4. 景点评分（柱状图） ==========
 st.subheader("⭐ 景点评分")
 score_data = pd.DataFrame({
     "景点": ["青秀山", "南宁园博园", "大明山", "三街两巷", "南湖公园"],
@@ -242,7 +221,7 @@ with score_col2:
     st.write("月游客数量")
     st.bar_chart(score_data, x="景点", y="游客数量(万/月)", color="#FF6347")
 
-# ========== 6. 不同类型景点消费（折线图） ==========
+# ========== 5. 不同类型景点消费（折线图） ==========
 st.subheader("💰 不同类型景点消费")
 cost_data = pd.DataFrame({
     "类型": ["自然景区", "文化园区", "历史街区", "城市公园"],
@@ -258,7 +237,7 @@ with cost_col2:
     st.write("推荐游玩时长")
     st.line_chart(cost_data, x="类型", y="推荐游玩时长(小时)", color="#32CD32")
 
-# ========== 7. 游玩高峰时段 ==========
+# ========== 6. 游玩高峰时段 ==========
 st.subheader("⏰ 游玩高峰时段")
 time_data = pd.DataFrame({
     "时段": ["09:00", "11:00", "13:00", "15:00", "17:00", "19:00"],
@@ -279,7 +258,7 @@ max_crowd_idx = time_data["拥挤指数"].idxmax()
 max_crowd_time = time_data.loc[max_crowd_idx, "时段"]
 st.warning(f"⚠️ 游玩提示：每日{max_crowd_time}为游客最高峰期，建议错峰出行")
 
-# ========== 8. 景点详情 ==========
+# ========== 7. 景点详情 ==========
 st.subheader("📍 景点详情")
 with st.expander("查看景点详情", expanded=True):
     # 使用更清晰的表格展示详情
@@ -292,7 +271,7 @@ with st.expander("查看景点详情", expanded=True):
     })
     st.dataframe(detail_data, use_container_width=True)
 
-# ========== 9. 今日游玩推荐 ==========
+# ========== 8. 今日游玩推荐 ==========
 st.subheader("✨ 今日游玩推荐")
 # 根据当前时间智能推荐
 current_hour = time.localtime().tm_hour
@@ -305,7 +284,7 @@ else:
 
 st.success(f"推荐：{recommendation}")
 
-# ========== 10. 游客反馈收集（新增功能） ==========
+# ========== 9. 游客反馈收集（新增功能） ==========
 st.subheader("📝 游客反馈")
 with st.form(key="feedback_form"):
     feedback_spot = st.selectbox("您游玩的景点", ["青秀山", "南宁园博园", "大明山", "三街两巷", "南湖公园"])
@@ -315,4 +294,3 @@ with st.form(key="feedback_form"):
     
     if submit_btn:
         st.success(f"感谢您的反馈！您对{feedback_spot}的评分为{feedback_rating}分。")
-        # 这里可以添加保存反馈数据的逻辑
